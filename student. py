@@ -1,1 +1,27 @@
-git commit -m "Set up project structure"
+from datetime import datetime
+
+
+class Student:
+    def __init__(self, student_id, name, student_class, gender, dob):
+        self.student_id = student_id
+        self.name = name
+        self.student_class = student_class
+        self.gender = gender
+        self.dob = dob
+        self.scores = {}          # {"Maths": 75, "English": 60}
+        self.date_entered = None
+
+    def set_score(self, subject, score):
+        self.scores[subject] = score
+        self.date_entered = datetime.now().strftime("%Y-%m-%d")
+
+    def to_dict(self):
+        return self.__dict__.copy()
+
+    @classmethod
+    def from_dict(cls, data):
+        s = cls(data["student_id"], data["name"], data["student_class"],
+                data["gender"], data["dob"])
+        s.scores = data.get("scores", {})
+        s.date_entered = data.get("date_entered")
+        return s
