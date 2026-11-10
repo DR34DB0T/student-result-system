@@ -1,0 +1,49 @@
+from student import Student
+
+
+def show_menu():
+    print("\n=== STUDENT RESULT SYSTEM ===")
+    print("1. Add student")
+    print("2. View all students")
+    print("0. Exit")
+
+
+def add_student(students):
+    student_id = input("Student ID: ").strip()
+    if any(s.student_id == student_id for s in students):
+        print("That ID already exists.")
+        return
+    name = input("Full name: ").strip()
+    student_class = input("Class/Form: ").strip()
+    gender = input("Gender (M/F): ").strip().upper()
+    dob = input("Date of birth (YYYY-MM-DD): ").strip()
+    students.append(Student(student_id, name, student_class, gender, dob))
+    print("Student added.")
+
+
+def view_students(students):
+    if not students:
+        print("No students registered yet.")
+        return
+    for s in students:
+        print(f"{s.student_id} | {s.name} | {s.student_class}")
+
+
+def main():
+    students = []          # later: students = load_students()
+    while True:
+        show_menu()
+        choice = input("Choose an option: ").strip()
+        if choice == "1":
+            add_student(students)
+        elif choice == "2":
+            view_students(students)
+        elif choice == "0":
+            print("Goodbye!")
+            break
+        else:
+            print("Invalid choice, try again.")
+
+
+if __name__ == "__main__":
+    main()
