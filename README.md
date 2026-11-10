@@ -4,8 +4,6 @@ A menu-driven Python application for managing student records and
 academic results. Built as the final project for Introduction to
 Python Programming at New Horizon.
 
-**Author:** [Your full name]
-**Matric No:** [Your matric number]
 
 ## Features
 
