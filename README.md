@@ -24,7 +24,7 @@ Python Programming at New Horizon.
 ## How to Run
 
 1. Clone the repository:
-   git clone https://github.com/[your-username]/student-result-system.git
+   git clone https://github.com/DR34DB0T/student-result-system.git
 2. Go into the folder:
    cd student-result-system
 3. Start the program:
