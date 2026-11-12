@@ -122,6 +122,21 @@ def export_report(students):
     if path:
         print(f"Report saved to {path}")
 
+def delete_student(students):
+    student_id = input("Student ID to delete: ").strip()
+    student = next((s for s in students if s.student_id == student_id), None)
+    if student is None:
+        print("Student not found.")
+        return False
+    
+    confirm = input(f"Delete {student.name} ({student.student_id})? (y/n): ").strip().lower()
+    if confirm == "y":
+        students.remove(student)
+        print("Student deleted")
+        return True
+    print("Deletion cancelled.")
+    return False
+
 if __name__ == "__main__":
     main()
     
