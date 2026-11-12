@@ -1,49 +1,127 @@
-from student import Student
+import results
+import reports 
+
+from storage import load_students, save_students
+from student import Student 
 
 
 def show_menu():
-    print("\n=== STUDENT RESULT SYSTEM ===")
-    print("1. Add student")
+    print("/n=== STUDENT RESULT SYSTEM ===")
+    print("1. Add Student")
     print("2. View all students")
+    print("3. Record / update scores")
+    print("4. Show report card")
+    print("5. List all students (sorted)")
+    print("6. Class statistics")
+    print("7. Save report to file")
     print("0. Exit")
 
 
 def add_student(students):
     student_id = input("Student ID: ").strip()
     if any(s.student_id == student_id for s in students):
-        print("That ID already exists.")
+        print("That ID is already in the system.")
         return
     name = input("Full name: ").strip()
     student_class = input("Class/Form: ").strip()
     gender = input("Gender (M/F): ").strip().upper()
-    dob = input("Date of birth (YYYY-MM-DD): ").strip()
+    dob = input("Date of Birth (YYYY-MM-DD): ").strip()
     students.append(Student(student_id, name, student_class, gender, dob))
     print("Student added.")
 
 
 def view_students(students):
     if not students:
-        print("No students registered yet.")
+        print("No students registered yet")
         return
     for s in students:
         print(f"{s.student_id} | {s.name} | {s.student_class}")
 
 
 def main():
-    students = []          # later: students = load_students()
+    students = load_students()         #later: students = load_students
     while True:
         show_menu()
         choice = input("Choose an option: ").strip()
         if choice == "1":
             add_student(students)
+            save_students(students)
         elif choice == "2":
             view_students(students)
+            save_students(students)
+        elif choice == "3":
+            record_scores(students)
+            save_students(students)
+        elif choice == "4":
+            show_report_card(students)
+        elif choice == "5":
+            list_students(students)
+        elif choice == "6":
+            show_statistics(students)
+        elif choice == "7":
+            export_report(students)
         elif choice == "0":
             print("Goodbye!")
+            save_students(students)
             break
         else:
-            print("Invalid choice, try again.")
+            print("Invalid choice, try again in a few minutes")
+            
+def record_scores(students):
+    student_id = input("Student ID:").strip()
+    student = next((s for s in students if s.student_id == student_id), None)
+    if student is None:
+        print("Student not found.")
+        return
+    
+    print(f"Enter scores for {student.name} (minimum {results.MIN_SUBJECTS} subjects).")
+    while True:
+        subject = input("Subject (or press enter to finish): ").strip()
+        if subject == "":
+            break
+        try:
+            score = results.validate_score(input(f"Score for {subject}: "))
+        except ValueError as e:
+            print(f"Invalid: {e}")
+            continue
+        
+        student.set_score(subject, score)
 
+    if not results.has_enough_subjects(student):
+        print(f"Warning: only {len(student.scores)} subjects recorded. Five are required.")
+
+def show_report_card(students):
+    student_id = input("Student ID: ").strip()
+    student = next((s for s in students if s.student_id == student_id), None)
+    if student is None:
+        print("Student not found. ")
+        return
+
+    data = results.get_report_data(student)
+    print(f"\n--- REPORT CARD: {student.name} ({student.student_id})---")
+    for subject, score in student.scores.items():
+        print(f"{subject:<15}{score}")
+    print(f"Total: {data['total']} Average: {data['average']} Grade: {data['grade']}")
+
+def list_students(students):
+    if not students:
+        print("No students registered yet.")
+        return
+    choice = input("Sort by (1) average or (2) name? ").strip()
+    if choice == "2":
+        ordered = reports.sort_by_name(students)
+    else:
+        ordered = reports.sort_by_average(students)
+    print(reports.build_summary(ordered))
+
+def show_statistics(students):
+    print(reports.build_statistics(students))
+
+def export_report(students):
+    path = reports.save_report(students)
+    if path:
+        print(f"Report saved to {path}")
 
 if __name__ == "__main__":
     main()
+    
