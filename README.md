@@ -15,6 +15,7 @@ Python Programming at New Horizon.
 - Show class statistics (highest, lowest, class average)
 - Save reports to a text file
 - Data saved to and loaded from `data/students.json`
+- Delete student profiles that aren't needed
 
 ## Requirements
 
